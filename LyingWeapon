@@ -1,0 +1,16 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public enum WeaponLocalType
+{
+    local,
+    lying
+}
+
+public class LyingWeapon : MonoBehaviour
+{
+    public TypeWeapon type;
+    public string weaponName;
+    public WeaponLocalType weaponType;
+}
