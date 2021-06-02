@@ -1,0 +1,34 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Cell : MonoBehaviour
+{
+    public GameObject cellObject;
+    public KeyCode cellKey;
+
+    public TypeWeapon type;
+
+    private void FixedUpdate()
+    {
+        if (Input.GetKeyDown(cellKey))
+        {
+            FindObjectOfType<Inventory>().ActiveCellObject(this);
+
+            foreach (Weapon weapon in cellObject.transform.GetComponentsInChildren<Weapon>())
+            {
+                if (weapon.gameObject.activeSelf)
+                { 
+                    if (type == TypeWeapon.BaseWeapon)
+                    {
+                        FindObjectOfType<Inventory>().activeBaseWeapon = weapon;
+                    }
+                    else if (type == TypeWeapon.Pistol)
+                    {
+                        FindObjectOfType<Inventory>().activePistol = weapon;
+                    }
+                }
+            }
+        }     
+    }
+}
