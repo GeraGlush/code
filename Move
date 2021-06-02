@@ -1,0 +1,88 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class PlayerMove : MonoBehaviour
+{
+    private float speed;
+    public float jumpPower;
+    public float normalSpeed;
+    private float graviti = 250;
+
+    [SerializeField] private bool isGrounded = true;
+    private Vector3 input;
+
+    public Transform head;
+    public Rigidbody rb;
+
+    private void Start()
+    {
+        rb = GetComponent<Rigidbody>();
+
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+    }
+
+    private void FixedUpdate()
+    {
+        input.z = Input.GetAxis("Horizontal");
+        input.x = Input.GetAxis("Vertical");
+
+        rb.velocity = Vector3.zero;
+
+        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+        {
+            StartCoroutine(Jump());
+            isGrounded = false;
+        }
+        else
+        {
+            rb.AddForce(Vector3.down * graviti);
+        }
+
+        if (Input.GetKeyDown(KeyCode.LeftControl))
+        {
+            speed = normalSpeed * 2;
+        }
+        else
+        {
+            speed = normalSpeed;
+        }
+
+        transform.rotation = new Quaternion(transform.rotation.x, 0, transform.rotation.z, transform.rotation.w);
+
+
+        Move(KeyCode.W, head.transform.forward);
+        Move(KeyCode.S, -head.transform.forward);
+        Move(KeyCode.D, head.transform.right);
+        Move(KeyCode.A, -head.transform.right);
+    }
+
+
+    private void Move(KeyCode _key, Vector3 _moveVector)
+    {
+        if (Input.GetKey(_key))
+        {
+            rb.AddForce(_moveVector * speed);
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.tag == "Ground")
+        {
+            isGrounded = true;
+        }
+    }
+
+    private IEnumerator Jump()
+    {
+        graviti = 0;
+        for (int i = 0; i <5; i++)
+        {
+            yield return new WaitForFixedUpdate();
+            rb.AddForce(Vector3.up * jumpPower);
+        }
+        graviti = 250;
+    }
+}
